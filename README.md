@@ -9,6 +9,7 @@ multimon-ng a fork of multimon. It decodes the following digital transmission mo
 - ZVEI1 ZVEI2 ZVEI3 DZVEI PZVEI
 - EEA EIA CCIR
 - MORSE CW
+- STQC
 
 The following changes have been made so far:
 - Fixes for x64
@@ -25,6 +26,7 @@ The following changes have been made so far:
 - PulseAudio support, contributed by inf_l00p_
 - Windows native audio and a VisualStudio/MSVC project file, contributed by bzzt_ploink
 - Now accepts raw samples as piped input
+- stqc.sh simple STQC encoder
 
 In addition to the deprecated legacy Makefile there is also a file for qmake which is the preferred way of building multimon-ng. It's recommended to use qmake to generate the Makefile.
 
