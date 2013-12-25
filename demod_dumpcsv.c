@@ -19,9 +19,14 @@
 
 #include "multimon.h"
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/time.h>
+
+#ifndef WINDOWS
+/* doesn't compile on gcc mingw 4.8.0 --sq5bpf */
+#include <sys/wait.h>
 #include <sys/resource.h>
+#endif
+
 #include <signal.h>
 #include <math.h>
 #include <string.h>
