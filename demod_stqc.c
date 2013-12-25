@@ -58,14 +58,14 @@ static const unsigned int stqc_freq[5] = {
 #define SAMPLE_RATE 22050
 #define BLOCKLEN (SAMPLE_RATE/100)  /* 10ms blocks */
 #define BLOCKNUM 4    /* must match numbers in multimon.h */
-#define TIMEOUT_LIMIT 15 //150ms
+#define TIMEOUT_LIMIT 15 /* 150ms */
 
-char callbuffer[128];
+char callbuffer[128]; /* this should really go into struct demod_state somwhere :) --sq5bpf */
 
 void selcall2_init(struct demod_state *s)
 {
-    memset(&s->l1.selcall, 0, sizeof(s->l1.selcall));
-callbuffer[0]=0;
+	memset(&s->l1.selcall, 0, sizeof(s->l1.selcall));
+	callbuffer[0]=0;
 }
 
 void selcall2_deinit(struct demod_state *s)
@@ -194,8 +194,16 @@ void selcall2_demod(struct demod_state *s, const float *buffer, int length,
 				c[0]='0'+i;
 				c[1]=0;
 				strncat(callbuffer,c,16);
+				/* these calls are usually 7 or 8 tones, so put a limit here at 16 tones
+				 * just in case there are longer ones */
+				if (strlen(callbuffer)>16) 
+				{
+					verbprintf (0,"STQC: too many tones\n");
+					parse_stqc((char *)&callbuffer);
+					callbuffer[0]=0;
+				}
 
-		//		verbprintf(0, "%s", (char *)&c);
+				//		verbprintf(0, "%s", (char *)&c);
 				s->l1.selcall.timeout = 1;
 			}
 			if(i == -1 && s->l1.selcall.timeout != 0)

@@ -9,7 +9,7 @@ multimon-ng a fork of multimon. It decodes the following digital transmission mo
 - ZVEI1 ZVEI2 ZVEI3 DZVEI PZVEI
 - EEA EIA CCIR
 - MORSE CW
-- STQC
+- STQC (see README_STQC for a description)
 
 The following changes have been made so far:
 - Fixes for x64
