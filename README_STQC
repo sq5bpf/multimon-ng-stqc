@@ -1,0 +1,151 @@
+Note: English version below.
+
+### Polski: Protokó³ STQC ####
+
+System ten jest wykorzystywany przez urz±dzenia firmy Digitex/Platan (wywo³anie
+selektywne do CB SW-xx, systemy profesjonalne DSP-xx).
+
+Zawarte tu oprogrmowanie zawiera enkoder STQC, oraz modu³ dekodera STQC do 
+programu multimon-ng. Dokumentacja do multimon-ng oraz Internet zawiera 
+liczne przy³ady u¿ycia tego programu, wiêc nie zostan± one tu przytoczone 
+(i tam odsy³am po odpowiedzi na ewentualne pytania). Program multimon-ng
+mo¿na uruchomiæ pod systemami linux, *bsd (w tym macos), oraz windows (w
+dwóch ostatnich przypadkach proszê nie kierowaæ do mnie zapytañ jak to zrobiæ).
+
+System STQC sk³ada siê z 5 tonów:
+0 - 980Hz 
+1 - 1197Hz
+2 - 1446Hz
+3 - 1795Hz
+4 - 2100Hz
+Sekwencja wywo³ania jest przeliczana na system czwórkowy, cyfry s± u¿ywane do 
+wyboru tonów 0-3. Powtarzaj±ce siê tony s± zastêpowane przez ton 4 (enkoder
+zak³ada, ¿e najpierw zosta³o wys³ane 0). Nieu¿ywane cyfry zastêpowane s±
+0. Tony maj± d³ugo¶æ 100ms. Cyfry nadawane s± od najbardziej znacz±cej.
+Zwykle stosowane s± sekwencje 7 i 8 tonowe. Ca³kowite wywo³anie to
+(zwykle) 7 tonów (prawdopodobnie adres odbiornika), 200ms przerwy i 8 tonów
+(prawdopodobnie komenda).
+
+Przyk³ad (zakoduj 1231 jako sekwencja 8 tonów):
+1231 (podstawa 10) = 00103033 (podstawa 4). 
+Zmiana powtapodstawacych siê cyfr na 4: 40103034
+Zmiana cyfr na tony [Hz]: 2100 980 1197 980 1795 980 1795 2100
+
+Protokó³ jest tak prosty, ¿e mo¿e byæ zaimplementowany nawet jako skrypt 
+shellowy. W razie w±tpliwo¶ci polecam RTFS.
+
+Prosta implementacja enkodera znajduje siê w stqc.sh.
+
+Prosta implementacja dekodera w 1 linijce shella:
+$ SEQ=40103034; echo "ibase=4; 0$SEQ"|sed -re 's/([0-3])4/\1\1/g'|bc -l
+1231
+
+Przyk³adowe tony mo¿na pozyskaæ np. z filmów na youtube (najpro¶ciej
+szukaæ po nazwie "dsp-50").
+
+Aby odkodowaæ nale¿y u¿yæ np multimon-ng -c -a STQC
+
+# Uwaga dla stra¿aków
+
+Wiele osób chcia³oby zrobiæ dekoder, aby mieæ w³asne powiadomienie, 
+niezale¿ne od syreny OSP. Powiadomienie takie mo¿na wykonaæ za pomoc±
+multimon-ng z obs³ug± STQC. Jako odbiornik mo¿na wykorzystaæ zarówno
+sprzêtowy odbiornik (np. stary transceiver na pasmo 2m, mo¿e byæ z 
+uszkodzonym nadajnikiem) i monitorowaæ jego wyj¶cie za pomoc± karty 
+d¼wiêkowej. Mo¿na te¿ wykorzystaæ tani tuner DVB-T z uk³adem RL2832 jako 
+odbiornik SDR (proszê szukaæ w internecie przyk³adów integracji multimon-ng 
+np z rtl_fm, gnuradio lub innym odbiornikiem SDR). Czêstotliwo¶ci s±
+opublikowane w internecie, mo¿na te¿ je samemy znale¼æ. Wyj¶cie z multimon-ng
+mo¿na ¶ledziæ za pomoc± programu expect i w zale¿no¶ci od pojawiaj±cych
+siê sekwencji uruchamiaæ skrypty realizuj±ce powiadamianie (np. wys³anie
+sms, maila, odtwarzanie d¼wiêku, wys³anie komunikatu na jaki¶ serwis 
+spo³eczno¶ciowy itp. wykorzystanie systemu linux daje tu prawie nieograniczone
+mo¿liwo¶ci prostej integracji za pomoc± skryptów, bez tworzenia dedykowanego
+do tego oprogramowania). 
+
+Za pomoc± enkodera STQC (skrypt stqc.sh) mo¿na wygenerowaæ sekwencjê tonów.
+Tak± sekwencjê mo¿na najprawdopodobniej zaprogrmowaæ w stra¿ackich 
+radiotelefonach s³u¿bowych, co umo¿liwi³oby sygnalizacjê w przypadku klêski 
+¿ywio³owej (je¶li nie dzia³a³by system wysy³aj±cy powiadomienia). 
+
+Je¶li to oprogrmowanie zostanie u¿yte z po¿ytkiem dla stra¿aków lub innych,
+prosi³bym o informacjê.
+
+Uwaga: to oprogramowanie nie mo¿e zast±piæ normalnego systemu powiadamiania.
+
+
+# Bezpieczeñstwo STQC
+
+W przypadku u¿ycia systemu wywo³ania o sta³ej sekwencji w kanale radiowym
+(dotyczy to ka¿dego publicznie dostepnego kana³u komunikacji),
+ka¿dy ma mo¿liwo¶æ nas³uchu tej sekwencji (nas³uchu a nie pods³uchu, poniewa¿
+transmisja nie jest w jakikolwiek sposób zabezpieczona technicznie).
+Daje to nieograniczone mo¿liwo¶ci jej ponownego wykorzystania, nawet bez
+znajomo¶ci szczegó³ów protoko³u (replay attack). M.in. z takich powodów
+tego typu systemy nie s± ju¿ u¿ywane w sytuacjach gdzie trzeba zapewniæ
+jakiekolwiek bezpieczeñstwo (przyk³adowo systemy ze zmiennym kodem s± 
+powszechnie u¿ywane w pilotach do samochodów od lat '90).
+
+Je¶li kana³ komunikacyjny nie jest publicznie dostêpny (np linia
+telefoniczna), to system ten mo¿e byæ dalej stosowany.
+
+Protokó³ zosta³ rozpracowany na podstawie opublikowanej w internecie listy
+sekwencji tonów dla liczb 0-21: http://forum.atnel.pl/topic4641.html , oraz
+publicznie dostêpnych w internecie filmów przedstawiaj±cych dzia³anie centralki
+DSP-50 (zawieraj±cych sekwencje tonów). Nie testowa³em oprogramowania na
+danych uzyskanych z nas³uchu, poniewa¿ w mojej okolicy (chyba) nie ma takich 
+systemów.
+
+U¿ywanie systemów posiadaj±cych te (podstawowe) podatno¶ci (publicznie
+dostêpny kana³, sta³a sekwencja steruj±ca) jest faktem. Optymizm sk³ania
+do wniosku, ¿e jest  to wynik starannej analizy (zagro¿eñ, kosztów itp), a 
+nie inercji.
+
+Powy¿sza analiza jest moj± w³asn±. Je¶li kto¶ ma inne zdanie/argumenty chêtnie
+bym je pozna³. Zapraszam do _konstruktywnej_ dyskusji.
+
+73 de Jacek Lipkowski <sq5bpf@lipkowski.org>
+
+
+
+##### English: STQC Protocol ####
+
+Note: the english version is intentionally short, as this system is used
+probably only in Poland.
+
+The STQC system consists of 5 tones: 
+0 - 980Hz 
+1 - 1197Hz
+2 - 1446Hz
+3 - 1795Hz
+4 - 2100Hz
+
+The call sequence is base-4 encoded, and the digits are used to select tones
+0-3. If a tone would repeat, then tone 4 is used (the encoder assumes that 0
+was transmitted first). The usused most-significant digits are filled with 0.  
+The tones are 100ms long. The digits are transmitted most significant digit 
+first.
+Call lengths of (usually) 7 and 8 tones are commonly used. The full call is
+7 tones (probably receiver address) + 200ms + 8 tones (command)  
+
+For example (encode 1231 into 8 tones):
+1231 (base 10) = 00103033 (base 4). 
+Change repeating tones to 4: 40103034
+Change numbers to tones [Hz]: 2100 980 1197 980 1795 980 1795 2100
+
+The protocol is really simple and can be implemented even as a shell-script.
+I hope this explanation is enough, if in doubt RTFS.
+
+See stqc.sh for a very simple implementation in shell.
+
+Simple one-line decoder in shell:
+$ SEQ=40103034; echo "ibase=4; 0$SEQ"|sed -re 's/([0-3])4/\1\1/g'|bc -l
+1231
+
+If you want example tones to decode, search for "dsp-50" on youtube.
+
+Use multimon-ng -c -a STQC to decode.
+
+73 de Jacek Lipkowski <sq5bpf@lipkowski.org>
+
+
