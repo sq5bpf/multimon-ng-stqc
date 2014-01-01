@@ -40,7 +40,7 @@ case "$C" in
 2) F=1446 ;;
 3) F=1795 ;;
 esac
-[ "$F" = "$PREV" ] && F=2100
+[ "$F" = "$PREV" ] && F=2105
 PREV=$F
 TON[$L]=$F
 	let L--
