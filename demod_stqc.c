@@ -51,7 +51,7 @@
 
 
 static const unsigned int stqc_freq[5] = {
-	    PHINC(980), PHINC(1197), PHINC(1446), PHINC(1795),PHINC(2100) };
+	    PHINC(980), PHINC(1197), PHINC(1446), PHINC(1795),PHINC(2105) };
 
 
 

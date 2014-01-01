@@ -17,7 +17,7 @@ System STQC sk³ada siê z 5 tonów:
 1 - 1197Hz
 2 - 1446Hz
 3 - 1795Hz
-4 - 2100Hz
+4 - 2105Hz
 Sekwencja wywo³ania jest przeliczana na system czwórkowy, cyfry s± u¿ywane do 
 wyboru tonów 0-3. Powtarzaj±ce siê tony s± zastêpowane przez ton 4 (enkoder
 zak³ada, ¿e najpierw zosta³o wys³ane 0). Nieu¿ywane cyfry zastêpowane s±
@@ -29,7 +29,7 @@ Zwykle stosowane s± sekwencje 7 i 8 tonowe. Ca³kowite wywo³anie to
 Przyk³ad (zakoduj 1231 jako sekwencja 8 tonów):
 1231 (podstawa 10) = 00103033 (podstawa 4). 
 Zmiana powtapodstawacych siê cyfr na 4: 40103034
-Zmiana cyfr na tony [Hz]: 2100 980 1197 980 1795 980 1795 2100
+Zmiana cyfr na tony [Hz]: 2105 980 1197 980 1795 980 1795 2105
 
 Protokó³ jest tak prosty, ¿e mo¿e byæ zaimplementowany nawet jako skrypt 
 shellowy. W razie w±tpliwo¶ci polecam RTFS.
@@ -118,7 +118,7 @@ The STQC system consists of 5 tones:
 1 - 1197Hz
 2 - 1446Hz
 3 - 1795Hz
-4 - 2100Hz
+4 - 2105Hz
 
 The call sequence is base-4 encoded, and the digits are used to select tones
 0-3. If a tone would repeat, then tone 4 is used (the encoder assumes that 0
@@ -131,7 +131,7 @@ Call lengths of (usually) 7 and 8 tones are commonly used. The full call is
 For example (encode 1231 into 8 tones):
 1231 (base 10) = 00103033 (base 4). 
 Change repeating tones to 4: 40103034
-Change numbers to tones [Hz]: 2100 980 1197 980 1795 980 1795 2100
+Change numbers to tones [Hz]: 2105 980 1197 980 1795 980 1795 2105
 
 The protocol is really simple and can be implemented even as a shell-script.
 I hope this explanation is enough, if in doubt RTFS.
