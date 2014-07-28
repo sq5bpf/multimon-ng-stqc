@@ -30,7 +30,7 @@ A=`echo "obase=4; $2"|bc -l `
 B=`printf "%.${1}i" $A`
 echo -n "$2: "
 
-L=$2
+L=$1
 PREV=980
 while [ "$L" -gt 0 ]; do
 C=`echo -n $B|tail -c $L|head -c 1`
@@ -43,7 +43,7 @@ esac
 [ "$F" = "$PREV" ] && F=2105
 PREV=$F
 TON[$L]=$F
-	let L--
+let L--
 done
 P=1
 for i in `seq $1 -1 1`
