@@ -35,6 +35,8 @@ Protokó³ jest tak prosty, ¿e mo¿e byæ zaimplementowany nawet jako skrypt
 shellowy. W razie w±tpliwo¶ci polecam RTFS.
 
 Prosta implementacja enkodera znajduje siê w stqc.sh.
+Enkoder ktory robi cale wywolanie stqc (7 tonow, przerwa 200ms, 8 tonow)
+znajduje sie w stqc2.sh.
 
 Prosta implementacja dekodera w 1 linijce shella:
 $ SEQ=40103034; echo "ibase=4; 0$SEQ"|sed -re 's/([0-3])4/\1\1/g'|bc -l
